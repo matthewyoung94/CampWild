@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Menu item for the search button on the right -->
+    <item
+        android:id="@+id/action_search"
+        android:title="Search"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_search"/>
+
+    <!-- Menu item for the menu button on the left -->
+    <item
+        android:id="@+id/action_menu"
+        android:title="Menu"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_gallery"/>
+    <!-- Add other menu items if needed -->
+
+</menu>

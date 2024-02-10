@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "420353260625",
+    "project_id": "weighty-tensor-378011",
+    "storage_bucket": "weighty-tensor-378011.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420353260625:android:42a3bb6aacfc0f8ac70c70",
+        "android_client_info": {
+          "package_name": "com.example.campwild"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEwZteMOZ2NyWiJvQamhTdImrpqkvx4mA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
