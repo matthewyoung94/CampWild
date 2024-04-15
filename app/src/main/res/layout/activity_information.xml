@@ -1,0 +1,90 @@
+
+    <!-- res/layout/activity_information.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvIntroduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome to CampWild! 🏕️"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Camping Responsibly 🌿"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Camping in the great outdoors is a wonderful experience. It's important to camp responsibly and follow the Scottish Access Code to preserve nature and ensure everyone can enjoy the beauty of the landscape."
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scottish Access Code"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvScottishAccessCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Learn more about the Scottish Access Code"
+            android:autoLink="web"
+            android:textColorLink="@color/colorAccent"
+            android:paddingBottom="16dp"/>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Leave No Trace Principles 🌍"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvLeaveNoTrace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Learn more about Leave No Trace Principles 🌲"
+            android:autoLink="web"
+            android:textColorLink="@color/colorAccent"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Understanding and adhering to Leave No Trace principles is crucial for minimising our impact on the environment while enjoying outdoor activities. These principles provide a comprehensive framework for responsible outdoor recreation, guiding us in making informed decisions to protect our natural spaces.\n\nThe seven core principles of Leave No Trace are:\n\n1. 🗺️ Plan ahead and prepare\n   Proper planning ensures a safe and enjoyable outdoor experience while minimising environmental impact.\n\n2. ⛺ Travel and camp on durable surfaces\n   Stick to established trails and campsites to avoid damaging fragile ecosystems.\n\n3. 🚯 Dispose of waste properly\n   Pack out all rubbish and leave no trace of your presence in natural areas.\n\n4. 🌿 Leave what you find\n   Preserve the natural beauty of outdoor spaces by leaving rocks, plants, and other natural objects as you found them.\n\n5. 🔥 Minimise campfire impacts\n   Follow local regulations and use existing fire rings when building campfires. Ensure fires are fully extinguished before leaving.\n\n6. 🦌 Respect wildlife\n   Observe wildlife from a distance and avoid feeding or disturbing animals in their natural habitat.\n\n7. 🚶 Be considerate of other visitors\n   Respect the rights of others to enjoy the outdoors by minimising noise and staying on designated trails.\n\nBy following these principles, outdoor enthusiasts can contribute to the conservation of our natural resources and foster a culture of environmental stewardship."
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp"/>
+
+    </LinearLayout>
+</ScrollView>
+</RelativeLayout>

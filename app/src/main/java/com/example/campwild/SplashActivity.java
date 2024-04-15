@@ -1,5 +1,4 @@
 package com.example.campwild;
-import com.example.campwild.R;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class SplashActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
-    private TextView textTitle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,13 +24,11 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         progressBar = findViewById(R.id.progressBar);
-        textTitle = findViewById(R.id.textTitle);
-
-        // Optional: Add animation to the title
+        TextView textTitle = findViewById(R.id.textTitle);
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         textTitle.startAnimation(fadeIn);
-
-        // Simulate a loading process and update the progress bar
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.flicker_animation);
+        textTitle.startAnimation(animation);
         simulateLoading();
     }
 
@@ -50,16 +49,19 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     });
                     try {
-                        Thread.sleep(50); // Simulate a delay
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     progress++;
                 }
 
-                // Start the main activity after the loading is complete
-                Intent intent = new Intent(SplashActivity.this, MapsActivity.class);
-                startActivity(intent);
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(SplashActivity.this, MapsActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }
                 finish();
             }
         }).start();

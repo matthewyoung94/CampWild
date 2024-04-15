@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Camp Wild</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="sign_in_mode">Sign In Mode</string>
+    <string name="sign_up_mode">Sign Up Mode</string>
+    <string name="sign_in">Sign In</string>
+    <string name="register">Register</string>
+    <string name="scottish_access_code_link">https://www.outdooraccess-scotland.scot/</string>
+    <string name="leave_no_trace_link">https://lnt.org/why/7-principles</string>
 </resources>

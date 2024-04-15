@@ -1,10 +1,12 @@
 <resources>
 
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <!-- Other style attributes -->
+        <item name="toolbarStyle">@style/MyToolbarStyle</item>
     </style>
+
+    <style name="MyToolbarStyle" parent="Widget.MaterialComponents.Toolbar" />
 
 </resources>

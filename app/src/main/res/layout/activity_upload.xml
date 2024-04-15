@@ -7,42 +7,38 @@
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload Location"
+        android:text="Upload A Location"
         android:textSize="24sp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp" />
 
-    <!-- Location Name -->
     <EditText
         android:id="@+id/editLocationName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Location Name"
+        android:hint="Name the campsite"
         android:inputType="text"
         android:layout_below="@id/textTitle"
         android:layout_marginTop="16dp" />
 
-    <!-- Latitude -->
     <EditText
         android:id="@+id/editLatitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Latitude"
-        android:inputType="numberDecimal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@id/editLocationName"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:inputType="numberDecimal" />
 
-    <!-- Longitude -->
     <EditText
         android:id="@+id/editLongitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Longitude"
-        android:inputType="numberDecimal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_below="@id/editLatitude"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:inputType="numberDecimal" />
 
-    <!-- Description -->
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="match_parent"
@@ -52,14 +48,36 @@
         android:layout_below="@id/editLongitude"
         android:layout_marginTop="8dp" />
 
-    <!-- Upload Button -->
+    <Button
+        android:id="@+id/btnPickImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick Image"
+        android:layout_below="@id/editDescription"
+        android:layout_marginTop="8dp"
+        android:background="?attr/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
     <Button
         android:id="@+id/btnUpload"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Upload"
-        android:layout_below="@id/editDescription"
+        android:layout_below="@id/btnPickImage"
         android:layout_marginTop="16dp"
+        android:background="?attr/colorPrimary"
+        android:textColor="@android:color/white"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnPickImage"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -1,29 +1,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splashscreen"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:fontFamily="sans-serif-condensed"
         android:text="Camp Wild"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:layout_centerInParent="true" />
+        android:textColor="@android:color/darker_gray"
+        android:textSize="56sp"
+        android:textStyle="bold" />
 
-    <!-- Loading Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textTitle"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="27dp"
         android:layout_marginRight="16dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0" />
+
 </RelativeLayout>
