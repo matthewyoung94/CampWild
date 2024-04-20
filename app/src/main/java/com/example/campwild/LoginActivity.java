@@ -35,9 +35,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if (FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseApp.initializeApp(this);
-        }
+//        if (FirebaseApp.getApps(this).isEmpty()) {
+//            FirebaseApp.initializeApp(this);
+//        }
 
         mAuth = FirebaseAuth.getInstance();
         editTextUsername = findViewById(R.id.editTextUsername);
@@ -99,8 +99,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            showRemainLoggedInDialog(email, password);
-//                            openMapsActivity();
+//                            showRemainLoggedInDialog(email, password);
+                            openMapsActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -115,8 +115,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            showRemainLoggedInDialog(email, password);
-//                            openMapsActivity();
+//                            showRemainLoggedInDialog(email, password);
+                            openMapsActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Sign up failed. Please try again.",
                                     Toast.LENGTH_SHORT).show();
@@ -125,35 +125,35 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void showRemainLoggedInDialog(final String email, final String password) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to remain logged in?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean("stayLoggedIn", true);
-                        editor.putString("email", email);
-                        editor.putString("password", password);
-                        editor.apply();
-                        openMapsActivity();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean("stayLoggedIn", false);
-                        editor.apply();
-                        openMapsActivity();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+//    private void showRemainLoggedInDialog(final String email, final String password) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage("Do you want to remain logged in?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                        SharedPreferences.Editor editor = preferences.edit();
+//                        editor.putBoolean("stayLoggedIn", true);
+//                        editor.putString("email", email);
+//                        editor.putString("password", password);
+//                        editor.apply();
+//                        openMapsActivity();
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                        SharedPreferences.Editor editor = preferences.edit();
+//                        editor.putBoolean("stayLoggedIn", false);
+//                        editor.apply();
+//                        openMapsActivity();
+//                    }
+//                });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//    }
 
     private void openMapsActivity() {
         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);

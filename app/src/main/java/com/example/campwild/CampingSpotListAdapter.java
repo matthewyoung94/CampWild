@@ -3,6 +3,8 @@ package com.example.campwild;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -30,7 +36,11 @@ public class CampingSpotListAdapter extends RecyclerView.Adapter<CampingSpotList
     private List<CampingSpot> campingSpots;
     private Context context;
 
+
     public CampingSpotListAdapter(Context context, List<CampingSpot> campingSpots) {
+        if (context == null) {
+            throw new IllegalArgumentException("Context cannot be null");
+        }
         this.campingSpots = campingSpots;
         this.context = context;
     }
@@ -48,9 +58,37 @@ public class CampingSpotListAdapter extends RecyclerView.Adapter<CampingSpotList
         holder.titleTextView.setText(campingSpot.getLocationName());
         holder.descriptionTextView.setText(campingSpot.getDescription());
         Log.d("Rating", "Rating for " + campingSpot.getLocationName() + ": " + campingSpot.getRating()); // Add this line for logging
-        Glide.with(context)
-                .load(campingSpot.getImageUri())
-                .into(holder.imageView);
+
+            if (campingSpot.getImageUri() != null && !campingSpot.getImageUri().isEmpty()) {
+                try {
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(campingSpot.getImageUri());
+                    storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            Glide.with(context)
+                                    .load(bitmap)
+                                    .into(holder.imageView);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Glide.with(context)
+                                    .load(R.drawable.campwildlogo) // Use your placeholder image here
+                                    .into(holder.imageView);
+                            // Handle any errors
+                            Log.e("CampingSpotListAdapter", "Failed to download image: " + exception.getMessage());
+                        }
+                    });
+                } catch (IllegalArgumentException e) {
+                    // Handle the case where the imageUri cannot be parsed correctly
+                    Log.e("CampingSpotListAdapter", "Failed to parse imageUri: " + e.getMessage());
+                    // Load a placeholder image
+                    Glide.with(context)
+                            .load(R.drawable.campwildlogo) // Use your placeholder image here
+                            .into(holder.imageView);
+                }
+            }
         float averageRating = calculateAverageRating(campingSpot);
         holder.ratingBar.setRating(campingSpot.getRating());
         holder.rateButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +124,7 @@ public class CampingSpotListAdapter extends RecyclerView.Adapter<CampingSpotList
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             rateButton = itemView.findViewById(R.id.rateButton);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 

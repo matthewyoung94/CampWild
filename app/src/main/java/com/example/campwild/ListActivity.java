@@ -80,7 +80,9 @@ public class ListActivity extends AppCompatActivity {
                             double longitude = Double.parseDouble(longitudeString);
                             CampingSpot campingSpot = new CampingSpot(id, locationName, latitudeString, longitudeString, description);
                             campingSpot.setRating(rating);
-                            campingSpot.setImageUri(imageUri);
+                            if (imageUri != null) {
+                                campingSpot.setImageUri(imageUri);
+                            }
                             campingSpots.add(campingSpot);
                         } catch (NumberFormatException e) {
                             Log.e("ListActivity", "Parsing error: " + e.getMessage());

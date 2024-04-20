@@ -1,83 +1,137 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload A Location"
-        android:textSize="24sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
-
-    <EditText
-        android:id="@+id/editLocationName"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name the campsite"
-        android:inputType="text"
-        android:layout_below="@id/textTitle"
-        android:layout_marginTop="16dp" />
-
-    <EditText
-        android:id="@+id/editLatitude"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@id/editLocationName"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:inputType="numberDecimal" />
-
-    <EditText
-        android:id="@+id/editLongitude"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@id/editLatitude"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:inputType="numberDecimal" />
-
-    <EditText
-        android:id="@+id/editDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Description"
-        android:inputType="textMultiLine"
-        android:layout_below="@id/editLongitude"
-        android:layout_marginTop="8dp" />
-
-    <Button
-        android:id="@+id/btnPickImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pick Image"
-        android:layout_below="@id/editDescription"
-        android:layout_marginTop="8dp"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
-        android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:elevation="8dp"
+        android:theme="@style/AppTheme">
 
-    <Button
-        android:id="@+id/btnUpload"
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Camp Wild"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload"
-        android:layout_below="@id/btnPickImage"
-        android:layout_marginTop="16dp"
-        android:background="?attr/colorPrimary"
-        android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@id/toolbar"
+        android:layout_margin="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:elevation="4dp">
 
-    <ImageView
-        android:id="@+id/imagePreview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnPickImage"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:visibility="gone" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload A Location"
+                android:textSize="24sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/locationNameLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textTitle"
+                android:layout_marginTop="24dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editLocationName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name the campsite"
+                    android:inputType="text" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <EditText
+                android:id="@+id/editLatitude"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/editLongitude"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:inputType="numberDecimal" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/descriptionLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/locationNameLayout"
+                android:layout_marginTop="24dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:inputType="textMultiLine" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnPickImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pick Image"
+                android:layout_below="@id/descriptionLayout"
+                android:layout_marginTop="24dp"
+                android:background="?attr/colorPrimary"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/btnUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                android:layout_below="@id/btnPickImage"
+                android:background="?attr/colorPrimary"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnPickImage"
+                android:layout_marginTop="8dp"
+                android:text="No image selected"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

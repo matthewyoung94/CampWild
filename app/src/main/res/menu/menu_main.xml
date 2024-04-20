@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_search"
         android:title="Search"
-        android:textColor="@color/white"
+        android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"
         android:orderInCategory="100"/>
 
@@ -14,20 +14,20 @@
         android:id="@+id/action_menu"
         android:title="Menu"
         app:showAsAction="always"
-        android:textColor="@color/white"
+        android:icon="@drawable/ic_menu"
         android:orderInCategory="200">
 
-        <!-- Submenu for the "Menu" button -->
         <menu>
             <item
                 android:id="@+id/action_information"
-                android:title="Information"/>
+                android:title="Information"
+                android:visible="false"/>
 
             <item
                 android:id="@+id/action_logout"
-                android:title="Logout"/>
+                android:title="Logout"
+                android:visible="false"/>
         </menu>
     </item>
-    <!-- Add other menu items if needed -->
 
 </menu>
