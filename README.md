@@ -6,7 +6,7 @@ CampWild is a mobile app designed to help outdoor enthusiasts discover and share
 
 - **Discover Camping Spots**: Browse through a curated list of camping spots submitted by fellow users.
 - **Share Your Favorites**: Contribute to the community by adding your favorite wild camping spots with detailed descriptions and photos.
-- **Interactive Map**: Visualize camping spots on an interactive map to plan your next outdoor adventure.
+- **Interactive Map**: Visualise camping spots on an interactive map to plan your next outdoor adventure.
 - **User Ratings**: Rate camping spots to help others find the best locations.
 - **Offline Access**: Access camping spot information even when you're offline, perfect for remote camping adventures.
 
