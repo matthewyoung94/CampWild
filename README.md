@@ -13,6 +13,7 @@ CampWild is a mobile app designed to help outdoor enthusiasts discover and share
 ## Technologies Used
 
 - **Frontend**:
+  - Java
   - Kotlin
   - XML (for layout)
   - Android SDK
