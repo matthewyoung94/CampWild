@@ -24,7 +24,26 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+
     </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search" />
+
+
+
+    </LinearLayout>
 
     <fragment
         android:id="@+id/map"
@@ -33,18 +52,18 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar" />
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/uploadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="120dp"
-        android:layout_marginBottom="78dp"
-        android:backgroundTint="?colorAccent"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="64dp"
+        android:backgroundTint="?colorPrimary"
         android:text="Upload Location"
         app:cornerRadius="20dp" />
 
@@ -58,6 +77,19 @@
         android:layout_marginBottom="18dp"
         android:backgroundTint="?colorPrimary"
         android:text="List View"
+        app:cornerRadius="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/toggleSatelliteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/uploadButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="239dp"
+        android:layout_marginBottom="68dp"
+        android:backgroundTint="?colorPrimary"
+        android:text="Satellite View"
         app:cornerRadius="20dp" />
 
 </RelativeLayout>

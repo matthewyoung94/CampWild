@@ -17,10 +17,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RatingBar
-import android.widget.SearchView
+//import android.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -48,10 +51,20 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.maps.android.PolyUtil
 
-class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListener {
+class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListener, GoogleMap.InfoWindowAdapter {
     private var mMap: GoogleMap? = null
     private var selectedLocationMarker: Marker? = null
     private var databaseReference: DatabaseReference? = null
+    private val markersList: MutableList<Marker> = mutableListOf()
+    private var searchView: SearchView? = null
+    private var searchLayout: LinearLayout? = null
+    private var isSearchVisible = false
+    // Inside your MapsActivity class
+
+    private var isSatelliteViewEnabled = false
+
+
+    // Function to toggle between satellite and normal vie
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -82,11 +95,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 intent.putExtra("Longitude", longitude)
                 startActivity(intent)
             } else {
-                Toast.makeText(
-                    this@MapsActivity,
-                    "Please select a location on the map.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showSnackbar("Please select a location on the map.")
             }
         }
         val listButton = findViewById<Button>(R.id.listButton)
@@ -98,7 +107,19 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 )
             )
         }
+        val toggleSatelliteButton = findViewById<Button>(R.id.toggleSatelliteButton)
+        toggleSatelliteButton.setOnClickListener {
+            isSatelliteViewEnabled = !isSatelliteViewEnabled
+            toggleSatelliteView()
+        }
     }
+
+    private fun toggleSatelliteView() {
+        if (mMap != null) {
+            mMap!!.mapType = if (isSatelliteViewEnabled) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -107,14 +128,82 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         val searchView = searchItem.actionView as SearchView?
         if (searchManager != null && searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            searchView.isIconifiedByDefault = true
+            searchView.setIconifiedByDefault(true)
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    // Handle search query submission
+                    if (!query.isNullOrEmpty()) {
+                        performSearch(query)
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    // Handle search query text change
+                    return false
+                }
+            })
         }
         return true
+    }
+    private fun performSearch(query: String) {
+        // Your search logic goes here
+        // For example, you can search for locations by name or other criteria
+
+        // Clear existing markers from the map
+        mMap?.clear()
+
+        // Iterate through all markers on the map
+        for (marker in markersList) {
+            // Check if the marker title contains the search query (case-insensitive match)
+            if (marker.title?.contains(query, ignoreCase = true) == true) {
+                // If the marker title matches the query, add it back to the map
+                marker.isVisible = true
+            } else {
+                // If the marker title does not match the query, hide it from the map
+                marker.isVisible = false
+            }
+        }
+    }
+    private fun showSearchView() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        searchLayout = findViewById(R.id.searchLayout)
+        searchLayout?.visibility = View.VISIBLE
+
+        // Create and add SearchView to the layout container
+        val searchView = SearchView(toolbar.context)
+        searchLayout?.addView(searchView)
+        isSearchVisible = true
+
+        // Set up search view listener
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // Perform search operation
+                performSearch(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Handle text change event
+                return true
+            }
+        })
+    }
+
+    private fun hideSearchView() {
+        searchLayout?.visibility = View.GONE
+        searchLayout?.removeAllViews()
+        isSearchVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.action_search) {
+            if (!isSearchVisible) {
+                showSearchView()
+            } else {
+                hideSearchView()
+            }
             Log.d("MenuItemClick", "Search item clicked")
             onSearchRequested()
             return true
@@ -133,6 +222,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         val popupMenu = PopupMenu(this, view)
         popupMenu.menu.add(Menu.NONE, R.id.action_information, Menu.NONE, "Information")
         popupMenu.menu.add(Menu.NONE, R.id.action_logout, Menu.NONE, "Logout")
+        popupMenu.menu.add(Menu.NONE, R.id.action_emergency, Menu.NONE, "Emergency")
         popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
             // Handle popup menu item clicks here
             when (item.itemId) {
@@ -145,6 +235,12 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 R.id.action_logout -> {
                     // Handle logout action
                     logoutUser()
+                    true
+                }
+
+                R.id.action_emergency -> {
+                    // Handle information action
+                    startActivity(Intent(this@MapsActivity, EmergencyActivity::class.java))
                     true
                 }
 
@@ -174,6 +270,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         databaseReference = database.getReference("campingSpots")
         databaseReference!!.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                markersList.clear()
                 Log.d("MapsActivity", "onDataChange called")
                 for (userSnapshot: DataSnapshot in dataSnapshot.children) {
                     Log.d("MapsActivity", "User Snapshot: " + userSnapshot.key)
@@ -216,6 +313,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                             assert(marker != null)
                             marker!!.tag = campingSpot
                             marker.snippet = description
+                            markersList.add(marker)
                             Log.d(
                                 "MapsActivity",
                                 "Marker added for Latitude: $latitude, Longitude: $longitude"
@@ -237,6 +335,9 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap?.setOnMarkerClickListener(this)
+        mMap?.setInfoWindowAdapter(this)
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -284,11 +385,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                     )
                     mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
                 } else {
-                    Toast.makeText(
-                        this@MapsActivity,
-                        "Please place a marker within Scotland.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showSnackbar("Please place your marker within Scotland.")
                 }
             }
 
@@ -326,56 +423,45 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         })
     }
 
+    private fun showSnackbar(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
+    }
+
     override fun onMarkerClick(marker: Marker): Boolean {
-        val title = marker.title
-        val snippet = marker.snippet
-        val campingSpot = marker.tag as CampingSpot?
+//
+        return false
+    }
+
+    override fun getInfoWindow(marker: Marker): View? {
+        return null // Returning null here indicates that we'll use the default info window
+    }
+
+
+
+    override fun getInfoContents(marker: Marker): View? {
         val infoWindowView = layoutInflater.inflate(R.layout.custom_info_window, null)
         val titleTextView = infoWindowView.findViewById<TextView>(R.id.titleTextView)
-        titleTextView.text = title
         val descriptionTextView = infoWindowView.findViewById<TextView>(R.id.descriptionTextView)
-        descriptionTextView.text = snippet
-
-        // Get reference to ImageView
         val imageView = infoWindowView.findViewById<ImageView>(R.id.imageView)
-
-
-        // Get image URI from CampingSpot object
-        val imageUri = campingSpot!!.imageUri
-        Log.d(
-            "Image URI",
-            "Image URI for " + campingSpot.locationName + ": " + campingSpot.imageUri
-        )
-        // Load image from Firebase Storage
-        if (imageUri != null && !imageUri.isEmpty()) {
-            // Create a reference to the image in Firebase Storage
-            val storageReference =
-                FirebaseStorage.getInstance("gs://weighty-tensor-378011.appspot.com/images")
-                    .getReferenceFromUrl(imageUri)
-
-            // Download the image and set it to the ImageView
-            storageReference.downloadUrl.addOnSuccessListener({ uri: Uri? ->
-                Glide.with(this)
-                    .load(uri)
-                    .into(imageView)
-            }).addOnFailureListener({ exception: Exception ->
-                // Handle any errors
-                Log.e(ContentValues.TAG, "Error downloading image: " + exception.message)
-                imageView.setVisibility(View.GONE) // Hide ImageView on failure
-            })
-        } else {
-            // If imageUri is null or empty, hide the ImageView
-            imageView.visibility = View.GONE
-            Log.d(ContentValues.TAG, "No image URI provided")
-        }
         val ratingBar = infoWindowView.findViewById<RatingBar>(R.id.ratingBar)
-        assert(campingSpot != null)
-        ratingBar.rating = campingSpot.rating.toFloat()
-        val builder = AlertDialog.Builder(this)
-        builder.setView(infoWindowView)
-            .setPositiveButton("OK", { dialog: DialogInterface, which: Int -> dialog.dismiss() })
-            .show()
-        return true
+
+        // Set data from marker tag to your custom info window views
+        val campingSpot = marker.tag as CampingSpot?
+        titleTextView.text = marker.title
+        descriptionTextView.text = marker.snippet
+        ratingBar.rating = campingSpot?.rating?.toFloat() ?: 0f
+
+        // Load image using Glide
+        val imageUri = campingSpot?.imageUri
+        if (!imageUri.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(imageUri)
+                .into(imageView)
+        } else {
+            imageView.visibility = View.GONE
+        }
+
+        return infoWindowView
     }
 
     companion object {
