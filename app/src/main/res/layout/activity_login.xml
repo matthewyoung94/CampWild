@@ -52,6 +52,29 @@
         android:minHeight="48dp"
         android:textColor="@color/black" />
 
+    <CheckBox
+        android:id="@+id/checkBoxTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I agree to the Terms and Conditions"
+        android:layout_below="@id/textViewToggleMode"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Link to terms activity -->
+    <TextView
+        android:id="@+id/textViewTermsLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terms and Conditions"
+        android:textColor="@color/black"
+        android:layout_below="@id/checkBoxTerms"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:textStyle="italic"/>
+
+
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.example.campwild;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,21 +40,39 @@ public class ListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         retrieveCampingSpots();
 
-        Button mapButton = findViewById(R.id.mapButton);
-        mapButton.setOnClickListener(new View.OnClickListener() {
+//        Button mapButton = findViewById(R.id.mapButton);
+//        mapButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(ListActivity.this, MapsActivity.class));
+//            }
+//        });
+//
+//        Button uploadButton = findViewById(R.id.uploadButton);
+//        uploadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(ListActivity.this, MapsActivity.class));
+//            }
+//        });
+
+        // Inside your ListActivity onCreate() method
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ListActivity.this, MapsActivity.class));
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.map_item:
+                    case R.id.upload_item:
+                        startActivity(new Intent(ListActivity.this, MapsActivity.class));
+                        return true;
+                    // Add more cases if you have additional menu items
+                    default:
+                        return false;
+                }
             }
         });
 
-        Button uploadButton = findViewById(R.id.uploadButton);
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ListActivity.this, MapsActivity.class));
-            }
-        });
     }
 
     private void retrieveCampingSpots() {

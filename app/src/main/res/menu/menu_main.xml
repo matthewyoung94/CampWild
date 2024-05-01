@@ -7,12 +7,11 @@
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
-
-    <!-- Menu item for the menu button on the left -->
+    
     <item
         android:id="@+id/action_menu"
         android:title="Menu"
-        app:showAsAction="always"
+        app:showAsAction="always|collapseActionView"
         android:icon="@drawable/ic_menu"
         android:orderInCategory="200">
 
@@ -25,6 +24,16 @@
             <item
                 android:id="@+id/action_emergency"
                 android:title="Emergency"
+                android:visible="false"/>
+
+            <item
+                android:id="@+id/action_packing"
+                android:title="Packing"
+                android:visible="false"/>
+
+            <item
+                android:id="@+id/action_terms"
+                android:title="Terms and Conditions"
                 android:visible="false"/>
 
             <item

@@ -16,6 +16,9 @@ plugins {
 }
 
 android {
+    viewBinding {
+        enabled = true
+    }
     namespace 'com.example.campwild'
     compileSdk 34
     defaultConfig {

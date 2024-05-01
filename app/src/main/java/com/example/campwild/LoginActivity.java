@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView textViewToggleMode;
     private boolean isSignInMode = true;
 
+    private CheckBox checkBoxTerms;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,17 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewToggleMode = findViewById(R.id.textViewToggleMode);
+        checkBoxTerms = findViewById(R.id.checkBoxTerms);
         updateToggleButtonText();
+
+        TextView textViewTermsLink = findViewById(R.id.textViewTermsLink);
+        textViewTermsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, TermsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +66,12 @@ public class LoginActivity extends AppCompatActivity {
                     editTextPassword.setError("Password is required");
                     return;
                 }
+
+                if (isSignInMode && !checkBoxTerms.isChecked()) {
+                    showSnackbar("Please agree to the terms and conditions.");
+                    return;
+                }
+
                 if (isSignInMode) {
                     signIn(email, password);
                 } else {
@@ -66,8 +85,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isSignInMode = !isSignInMode;
                 updateToggleButtonText();
+                checkBoxTerms.setVisibility(isSignInMode ? View.GONE : View.VISIBLE);
             }
         });
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean stayLoggedIn = preferences.getBoolean("stayLoggedIn", false);
         if (stayLoggedIn) {
@@ -100,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void signUp(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
