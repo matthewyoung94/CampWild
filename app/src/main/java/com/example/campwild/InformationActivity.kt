@@ -10,12 +10,20 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class InformationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_information)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Show the back button
 
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        toolbar.title = "Camp Wild"
         // Handle the Scottish Access Code link
         val tvScottishAccessCode = findViewById<TextView>(R.id.tvScottishAccessCode)
         val spannableStringScottish = SpannableString(getString(R.string.scottish_access_code_link))

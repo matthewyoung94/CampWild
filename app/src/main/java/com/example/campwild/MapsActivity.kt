@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -45,12 +46,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.common.reflect.TypeToken
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
 import com.google.maps.android.PolyUtil
 
 class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListener, GoogleMap.InfoWindowAdapter {
@@ -72,6 +75,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
 //        } catch (Exception e) {
 //            Log.e("MapsActivity", "Firebase initialization failed", e);
 //        }
+
         val binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val mapFragment = supportFragmentManager
@@ -119,35 +123,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
 
         }
     }
-
-//        val uploadButton = findViewById<Button>(R.id.uploadButton)
-//        uploadButton.setOnClickListener {
-//            if (selectedLocationMarker != null) {
-//                val latitude = selectedLocationMarker!!.position.latitude
-//                val longitude = selectedLocationMarker!!.position.longitude
-//                val intent = Intent(this@MapsActivity, UploadActivity::class.java)
-//                intent.putExtra("Latitude", latitude)
-//                intent.putExtra("Longitude", longitude)
-//                startActivity(intent)
-//            } else {
-//                showSnackbar("Please select a location on the map.")
-//            }
-//        }
-//        val listButton = findViewById<Button>(R.id.listButton)
-//        listButton.setOnClickListener {
-//            startActivity(
-//                Intent(
-//                    this@MapsActivity,
-//                    ListActivity::class.java
-//                )
-//            )
-//        }
-//        val toggleSatelliteButton = findViewById<Button>(R.id.toggleSatelliteButton)
-//        toggleSatelliteButton.setOnClickListener {
-//            isSatelliteViewEnabled = !isSatelliteViewEnabled
-//            toggleSatelliteView()
-//        }
-//    }
 
     private fun toggleSatelliteView() {
         if (mMap != null) {
@@ -201,17 +176,17 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
             }
         }
     }
-    private fun showSearchView() {
-        val searchView = findViewById<SearchView>(R.id.searchView)
-        searchView.visibility = View.VISIBLE
-        isSearchVisible = true
-    }
-
-    private fun hideSearchView() {
-        val searchView = findViewById<SearchView>(R.id.searchView)
-        searchView.visibility = View.GONE
-        isSearchVisible = false
-    }
+//    private fun showSearchView() {
+//        val searchView = findViewById<SearchView>(R.id.searchView)
+//        searchView.visibility = View.VISIBLE
+//        isSearchVisible = true
+//    }
+//
+//    private fun hideSearchView() {
+//        val searchView = findViewById<SearchView>(R.id.searchView)
+//        searchView.visibility = View.GONE
+//        isSearchVisible = false
+//    }
 //    private fun showSearchView() {
 //        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 //        searchLayout = findViewById(R.id.searchLayout)
@@ -246,11 +221,11 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.action_search) {
-            if (!isSearchVisible) {
-                showSearchView()
-            } else {
-                hideSearchView()
-            }
+//            if (!isSearchVisible) {
+//                showSearchView()
+//            } else {
+//                hideSearchView()
+//            }
             Log.d("MenuItemClick", "Search item clicked")
             onSearchRequested()
             return true
@@ -319,81 +294,137 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         startActivity(Intent(this@MapsActivity, LoginActivity::class.java))
         finish()
     }
-
     private fun retrieveCampingSpots() {
-        val database =
-            FirebaseDatabase.getInstance("https://weighty-tensor-378011-default-rtdb.europe-west1.firebasedatabase.app")
-        //        database.setPersistenceEnabled(true);
-        databaseReference = database.getReference("campingSpots")
-        databaseReference!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                markersList.clear()
-                Log.d("MapsActivity", "onDataChange called")
-                for (userSnapshot: DataSnapshot in dataSnapshot.children) {
-                    Log.d("MapsActivity", "User Snapshot: " + userSnapshot.key)
-                    val locationName = userSnapshot.child("locationName").getValue(
-                        String::class.java
-                    )
-                    val latitudeString = userSnapshot.child("latitude").getValue(
-                        String::class.java
-                    )
-                    val longitudeString = userSnapshot.child("longitude").getValue(
-                        String::class.java
-                    )
-                    val description = userSnapshot.child("description").getValue(
-                        String::class.java
-                    )
-                    val imageUri = userSnapshot.child("imageUri").getValue(
-                        String::class.java
-                    )
-                    val ratingInteger = userSnapshot.child("rating").getValue(Int::class.java)
-                    val rating = ratingInteger ?: 0 // Default value if rating is null
-                    if ((locationName != null) && (latitudeString != null) && (longitudeString != null) && (description != null)) {
-                        try {
-                            val latitude = latitudeString.toDouble()
-                            val longitude = longitudeString.toDouble()
-                            val campingSpot = CampingSpot(
-                                locationName,
-                                latitudeString,
-                                longitudeString,
-                                description
-                            )
-                            campingSpot.rating = rating
-                            val marker = mMap!!.addMarker(
-                                MarkerOptions().position(
-                                    LatLng(
-                                        latitude,
-                                        longitude
-                                    )
-                                ).title(locationName)
-                            )
-                            assert(marker != null)
-                            marker!!.tag = campingSpot
-                            marker.snippet = description
-                            markersList.add(marker)
-                            Log.d(
-                                "MapsActivity",
-                                "Marker added for Latitude: $latitude, Longitude: $longitude"
-                            )
-                        } catch (e: NumberFormatException) {
-                            Log.e("MapsActivity", "Parsing error: " + e.message)
+        if (isNetworkAvailable()) {
+            val database =
+                FirebaseDatabase.getInstance("https://weighty-tensor-378011-default-rtdb.europe-west1.firebasedatabase.app")
+            //        database.setPersistenceEnabled(true);
+            databaseReference = database.getReference("campingSpots")
+            databaseReference!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    markersList.clear()
+                    Log.d("MapsActivity", "onDataChange called")
+                    val campingSpots = mutableListOf<CampingSpot>()
+                    for (userSnapshot: DataSnapshot in dataSnapshot.children) {
+                        Log.d("MapsActivity", "User Snapshot: " + userSnapshot.key)
+                        val locationName = userSnapshot.child("locationName").getValue(
+                            String::class.java
+                        )
+                        val latitudeString = userSnapshot.child("latitude").getValue(
+                            String::class.java
+                        )
+                        val longitudeString = userSnapshot.child("longitude").getValue(
+                            String::class.java
+                        )
+                        val description = userSnapshot.child("description").getValue(
+                            String::class.java
+                        )
+                        val imageUri = userSnapshot.child("imageUri").getValue(
+                            String::class.java
+                        )
+                        val ratingInteger = userSnapshot.child("rating").getValue(Int::class.java)
+                        val rating = ratingInteger ?: 0 // Default value if rating is null
+                        if ((locationName != null) && (latitudeString != null) && (longitudeString != null) && (description != null)) {
+                            try {
+                                val latitude = latitudeString.toDouble()
+                                val longitude = longitudeString.toDouble()
+                                val campingSpot = CampingSpot(
+                                    locationName,
+                                    latitudeString,
+                                    longitudeString,
+                                    description
+                                )
+                                campingSpot.rating = rating
+                                val marker = mMap!!.addMarker(
+                                    MarkerOptions().position(
+                                        LatLng(
+                                            latitude,
+                                            longitude
+                                        )
+                                    ).title(locationName)
+                                )
+                                assert(marker != null)
+                                marker!!.tag = campingSpot
+                                marker.snippet = description
+                                markersList.add(marker)
+                                Log.d(
+                                    "MapsActivity",
+                                    "Marker added for Latitude: $latitude, Longitude: $longitude"
+                                )
+                                campingSpots.add(campingSpot)
+                            } catch (e: NumberFormatException) {
+                                Log.e("MapsActivity", "Parsing error: " + e.message)
+                            }
+                        } else {
+                            Log.e("MapsActivity", "Some data is null for user: " + userSnapshot.key)
                         }
-                    } else {
-                        Log.e("MapsActivity", "Some data is null for user: " + userSnapshot.key)
                     }
+                    saveCampingSpotsToSharedPreferences(campingSpots)
                 }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("MapsActivity", "Database Error: " + databaseError.message)
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.e("MapsActivity", "Database Error: " + databaseError.message)
+                }
+            })
+        } else {
+            // If network is not available, retrieve camping spots from SharedPreferences
+            retrieveCampingSpotsFromSharedPreferences()
+        }
     }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
+    private fun saveCampingSpotsToSharedPreferences(campingSpots: List<CampingSpot>) {
+        val sharedPreferences = getSharedPreferences("CampingSpots", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        val gson = Gson()
+        val campingSpotsJson = gson.toJson(campingSpots)
+
+        editor.putString("campingSpots", campingSpotsJson)
+        editor.apply()
+    }
+
+    private fun retrieveCampingSpotsFromSharedPreferences() {
+        val sharedPreferences = getSharedPreferences("CampingSpots", Context.MODE_PRIVATE)
+        val campingSpotsJson = sharedPreferences.getString("campingSpots", null)
+
+        if (!campingSpotsJson.isNullOrEmpty()) {
+            // Convert JSON string to list of CampingSpot objects using Gson
+            val gson = Gson()
+            val campingSpotsType = object : TypeToken<List<CampingSpot>>() {}.type
+            val campingSpots = gson.fromJson<List<CampingSpot>>(campingSpotsJson, campingSpotsType)
+
+            // Add camping spots to markersList
+            if (mMap != null) {
+            for (campingSpot in campingSpots) {
+                val marker = mMap?.addMarker(
+                    MarkerOptions().position(
+                        LatLng(
+                            campingSpot.latitude.toDouble(),
+                            campingSpot.longitude.toDouble()
+                        )
+                    ).title(campingSpot.locationName)
+                )
+                marker?.tag = campingSpot
+                marker?.snippet = campingSpot.description
+                marker?.isVisible = true
+                markersList.add(marker!!)
+            }
+        }
+    }}
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap?.setOnMarkerClickListener(this)
         mMap?.setInfoWindowAdapter(this)
+        retrieveCampingSpotsFromSharedPreferences()
 
         if (ActivityCompat.checkSelfPermission(
                 this,
