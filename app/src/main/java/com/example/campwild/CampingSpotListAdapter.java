@@ -76,16 +76,13 @@ public class CampingSpotListAdapter extends RecyclerView.Adapter<CampingSpotList
                             Glide.with(context)
                                     .load(R.drawable.campwildlogo) // Use your placeholder image here
                                     .into(holder.imageView);
-                            // Handle any errors
                             Log.e("CampingSpotListAdapter", "Failed to download image: " + exception.getMessage());
                         }
                     });
                 } catch (IllegalArgumentException e) {
-                    // Handle the case where the imageUri cannot be parsed correctly
                     Log.e("CampingSpotListAdapter", "Failed to parse imageUri: " + e.getMessage());
-                    // Load a placeholder image
                     Glide.with(context)
-                            .load(R.drawable.campwildlogo) // Use your placeholder image here
+                            .load(R.drawable.campwildlogo)
                             .into(holder.imageView);
                 }
             }
@@ -162,7 +159,7 @@ public class CampingSpotListAdapter extends RecyclerView.Adapter<CampingSpotList
         if (totalRatings != 0) {
             return (float) totalRatingValue / totalRatings;
         } else {
-            return 0; // Return 0 if no ratings available
+            return 0;
         }
     }
 

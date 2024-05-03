@@ -41,18 +41,10 @@ public class CampingSpotTest {
         original.setRating(5);
         original.setTotalRatings(10);
         original.setTotalRatingValue(50);
-
-        // Parcel the object
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, original.describeContents());
-
-        // Reset the parcel for reading
         parcel.setDataPosition(0);
-
-        // Unparcel the object
         CampingSpot unparceled = CampingSpot.CREATOR.createFromParcel(parcel);
-
-        // Verify the correctness of the unparceled object
         assertEquals(original.getId(), unparceled.getId());
         assertEquals(original.getLocationName(), unparceled.getLocationName());
         assertEquals(original.getLatitude(), unparceled.getLatitude());

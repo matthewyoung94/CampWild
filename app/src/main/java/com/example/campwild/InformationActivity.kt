@@ -18,13 +18,12 @@ class InformationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_information)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Show the back button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
         toolbar.title = "Camp Wild"
-        // Handle the Scottish Access Code link
         val tvScottishAccessCode = findViewById<TextView>(R.id.tvScottishAccessCode)
         val spannableStringScottish = SpannableString(getString(R.string.scottish_access_code_link))
         val clickableSpanScottish: ClickableSpan = object : ClickableSpan() {
@@ -41,7 +40,6 @@ class InformationActivity : AppCompatActivity() {
         tvScottishAccessCode.text = spannableStringScottish
         tvScottishAccessCode.movementMethod = LinkMovementMethod.getInstance()
 
-        // Handle the Leave No Trace link
         val tvLeaveNoTrace = findViewById<TextView>(R.id.tvLeaveNoTrace)
         val spannableStringLeaveNoTrace = SpannableString(getString(R.string.leave_no_trace_link))
         val clickableSpanLeaveNoTrace: ClickableSpan = object : ClickableSpan() {

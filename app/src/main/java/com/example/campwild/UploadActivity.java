@@ -107,7 +107,7 @@ public class UploadActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(e -> {
                             Log.e("UploadActivity", "Error uploading image", e);
-                            Toast.makeText(this, "Error uploading image", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error uploading image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
             } else {
                 // No image selected

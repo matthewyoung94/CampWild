@@ -13,12 +13,11 @@ class EmergencyActivity : AppCompatActivity() {
         setContentView(R.layout.activity_emergency)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Show the back button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        toolbar.title = "Camp Wild"
         val rescueNumberTextView = findViewById<TextView>(R.id.rescue_number_text)
         val emergencyNumberTextView = findViewById<TextView>(R.id.emergency_number_text)
         rescueNumberTextView.text = "Contact Scottish Mountain Rescue on " + MOUNTAIN_RESCUE_NUMBER

@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         updateToggleButtonText();
 
         TextView textViewTermsLink = findViewById(R.id.textViewTermsLink);
+        checkBoxTerms.setVisibility(isSignInMode ? View.GONE : View.VISIBLE);
         textViewTermsLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (isSignInMode && !checkBoxTerms.isChecked()) {
+                if (!isSignInMode && !checkBoxTerms.isChecked()) {
                     showSnackbar("Please agree to the terms and conditions.");
                     return;
                 }
@@ -137,37 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
-//    private void showRemainLoggedInDialog(final String email, final String password) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setMessage("Do you want to remain logged in?")
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                        SharedPreferences.Editor editor = preferences.edit();
-//                        editor.putBoolean("stayLoggedIn", true);
-//                        editor.putString("email", email);
-//                        editor.putString("password", password);
-//                        editor.apply();
-//                        openMapsActivity();
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//                        SharedPreferences.Editor editor = preferences.edit();
-//                        editor.putBoolean("stayLoggedIn", false);
-//                        editor.apply();
-//                        openMapsActivity();
-//                    }
-//                });
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
-
     private void showSnackbar(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
     }

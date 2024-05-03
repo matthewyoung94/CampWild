@@ -94,7 +94,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_upload -> {
-                    // Handle Upload Location action
                     if (selectedLocationMarker != null) {
                         val latitude = selectedLocationMarker!!.position.latitude
                         val longitude = selectedLocationMarker!!.position.longitude
@@ -108,12 +107,10 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                     true
                 }
                 R.id.action_list -> {
-                    // Handle List View action
                     startActivity(Intent(this@MapsActivity, ListActivity::class.java))
                     true
                 }
                 R.id.action_toggle_satellite -> {
-                    // Handle Satellite View action
                     isSatelliteViewEnabled = !isSatelliteViewEnabled
                     toggleSatelliteView()
                     true
@@ -141,7 +138,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
             searchView.setIconifiedByDefault(true)
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    // Handle search query submission
                     if (!query.isNullOrEmpty()) {
                         performSearch(query)
                     }
@@ -149,7 +145,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    // Handle search query text change
                     return false
                 }
             })
@@ -158,20 +153,11 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
     }
 
     private fun performSearch(query: String) {
-        // Your search logic goes here
-        // For example, you can search for locations by name or other criteria
-
-        // Clear existing markers from the map
         mMap?.clear()
-
-        // Iterate through all markers on the map
         for (marker in markersList) {
-            // Check if the marker title contains the search query (case-insensitive match)
             if (marker.title?.contains(query, ignoreCase = true) == true) {
-                // If the marker title matches the query, add it back to the map
                 marker.isVisible = true
             } else {
-                // If the marker title does not match the query, hide it from the map
                 marker.isVisible = false
             }
         }
@@ -192,7 +178,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
 //        searchLayout = findViewById(R.id.searchLayout)
 //        searchLayout?.visibility = View.VISIBLE
 //
-//        // Create and add SearchView to the layout container
 //        val searchView = SearchView(toolbar.context)
 //        searchLayout?.addView(searchView)
 //        isSearchVisible = true
@@ -255,19 +240,16 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 }
 
                 R.id.action_emergency -> {
-                    // Handle information action
                     startActivity(Intent(this@MapsActivity, EmergencyActivity::class.java))
                     true
                 }
 
                 R.id.action_terms -> {
-                    // Handle information action
                     startActivity(Intent(this@MapsActivity, TermsActivity::class.java))
                     true
                 }
 
                 R.id.action_packing -> {
-                    // Handle information action
                     startActivity(Intent(this@MapsActivity, PackingActivity::class.java))
                     true
                 }
@@ -323,7 +305,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                             String::class.java
                         )
                         val ratingInteger = userSnapshot.child("rating").getValue(Int::class.java)
-                        val rating = ratingInteger ?: 0 // Default value if rating is null
+                        val rating = ratingInteger ?: 0 
                         if ((locationName != null) && (latitudeString != null) && (longitudeString != null) && (description != null)) {
                             try {
                                 val latitude = latitudeString.toDouble()
@@ -367,7 +349,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 }
             })
         } else {
-            // If network is not available, retrieve camping spots from SharedPreferences
             retrieveCampingSpotsFromSharedPreferences()
         }
     }
@@ -395,12 +376,9 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
         val campingSpotsJson = sharedPreferences.getString("campingSpots", null)
 
         if (!campingSpotsJson.isNullOrEmpty()) {
-            // Convert JSON string to list of CampingSpot objects using Gson
             val gson = Gson()
             val campingSpotsType = object : TypeToken<List<CampingSpot>>() {}.type
             val campingSpots = gson.fromJson<List<CampingSpot>>(campingSpotsJson, campingSpotsType)
-
-            // Add camping spots to markersList
             if (mMap != null) {
             for (campingSpot in campingSpots) {
                 val marker = mMap?.addMarker(
@@ -478,7 +456,6 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
             }
 
             private fun isLocationInScotland(location: LatLng): Boolean {
-                // Define the coordinates for the borders of Scotland
                 val scotlandBorders: MutableList<LatLng> = ArrayList()
                 scotlandBorders.add(LatLng(54.692467, -5.201933))
                 scotlandBorders.add(LatLng(54.533414, -5.168974))
@@ -495,17 +472,12 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                 scotlandBorders.add(LatLng(55.912840, -7.535320))
                 scotlandBorders.add(LatLng(55.367200, -6.041179))
                 scotlandBorders.add(LatLng(54.699818, -5.272136))
-
-                // Define a polygon representing the borders of Scotland
                 val polygonOptions = PolygonOptions()
                     .addAll(scotlandBorders)
-                    .strokeColor(Color.TRANSPARENT) // Set border color
-                    .strokeWidth(0f) // Set border width
+                    .strokeColor(Color.TRANSPARENT)
+                    .strokeWidth(0f)
 
-                // Add the polygon to the map
                 val scotlandPolygon = mMap!!.addPolygon(polygonOptions)
-
-                // Check if the location is within the polygon
                 return PolyUtil.containsLocation(location, scotlandBorders, false)
             }
         })

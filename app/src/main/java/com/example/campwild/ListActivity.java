@@ -40,23 +40,6 @@ public class ListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         retrieveCampingSpots();
 
-//        Button mapButton = findViewById(R.id.mapButton);
-//        mapButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(ListActivity.this, MapsActivity.class));
-//            }
-//        });
-//
-//        Button uploadButton = findViewById(R.id.uploadButton);
-//        uploadButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(ListActivity.this, MapsActivity.class));
-//            }
-//        });
-
-        // Inside your ListActivity onCreate() method
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -66,7 +49,6 @@ public class ListActivity extends AppCompatActivity {
                     case R.id.upload_item:
                         startActivity(new Intent(ListActivity.this, MapsActivity.class));
                         return true;
-                    // Add more cases if you have additional menu items
                     default:
                         return false;
                 }

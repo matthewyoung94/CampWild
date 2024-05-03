@@ -32,7 +32,6 @@ public class CampingSpot implements Parcelable {
         this.rating = 0;
     }
 
-    // Constructor with ID parameter
     public CampingSpot(String id, String locationName, String latitude, String longitude, String description) {
         this.id = id;
         this.locationName = locationName;
@@ -45,7 +44,6 @@ public class CampingSpot implements Parcelable {
         this.totalRatingValue = 0;
     }
 
-    // Getter and setter for ID
     public String getId() {
         return id;
     }
