@@ -6,167 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Camping Spots</title>
   <link rel="stylesheet" href="styles.css">
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js';
-    import { getDatabase, ref, onValue, remove, set } from 'https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js';
-    
-    async function loadGoogleMaps() {
-            const googleMapsUrl = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCgl_xTAa2SPIUcEJ1-Jo4ZD29PLwJHZHE&callback=initMap';
-            const googleMapsModule = await import(googleMapsUrl);
-            initMap();
-        }
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCEwZteMOZ2NyWiJvQamhTdImrpqkvx4mA",
-      authDomain: "weighty-tensor-378011.firebaseapp.com",
-      projectId: "weighty-tensor-378011",
-      storageBucket: "weighty-tensor-378011.appspot.com",
-      databaseURL: " https://weighty-tensor-378011-default-rtdb.europe-west1.firebasedatabase.app",
-      messagingSenderId: "420353260625",
-      appId: "1:420353260625:android:42a3bb6aacfc0f8ac70c70"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-    const campingSpotsRef = ref(database, 'campingSpots');
-
-    function displayCampingSpots() {
-      onValue(campingSpotsRef, (snapshot) => {
-        const campingSpotList = document.getElementById('campingSpotList');
-        campingSpotList.innerHTML = '';
-
-        snapshot.forEach((childSnapshot) => {
-          const campingSpot = childSnapshot.val();
-          const li = document.createElement('li');
-         // Location Name
-      const locationName = document.createTextNode(`Location: ${campingSpot.locationName}`);
-      li.appendChild(locationName);
-      li.appendChild(document.createElement('br'));
-
-      // Description
-      const description = document.createTextNode(`Description: ${campingSpot.description}`);
-      li.appendChild(description);
-      li.appendChild(document.createElement('br'));
-
-      // Latitude
-      const latitude = document.createTextNode(`Latitude: ${campingSpot.latitude}`);
-      li.appendChild(latitude);
-      li.appendChild(document.createElement('br'));
-
-      // Longitude
-      const longitude = document.createTextNode(`Longitude: ${campingSpot.longitude}`);
-      li.appendChild(longitude);
-      li.appendChild(document.createElement('br')); // Optionally, you can add an image if available
-            if (campingSpot.imageUri) {
-                const img = document.createElement('img');
-                img.src = campingSpot.imageUri;
-                img.alt = 'Camping Spot Image';
-                li.appendChild(img);
-            }
-
-             const editButton = document.createElement('button');
-      editButton.textContent = 'Edit';
-      editButton.addEventListener('click', () => {
-        // Create form for editing
-        const editForm = document.createElement('form');
-        editForm.innerHTML = `
-          <input type="text" id="editLocationName" value="${campingSpot.locationName}">
-          <input type="text" id="editDescription" value="${campingSpot.description}">
-          <input type="text" id="editLatitude" value="${campingSpot.latitude}">
-          <input type="text" id="editLongitude" value="${campingSpot.longitude}">
-          <button type="button" id="saveEditButton">Save</button>
-        `;
-        li.appendChild(editForm);
-
-        // Handle save button click
-        const saveEditButton = editForm.querySelector('#saveEditButton');
-        saveEditButton.addEventListener('click', () => {
-          const editedCampingSpot = {
-            locationName: editForm.querySelector('#editLocationName').value,
-            description: editForm.querySelector('#editDescription').value,
-            latitude: editForm.querySelector('#editLatitude').value,
-            longitude: editForm.querySelector('#editLongitude').value,
-            // You may also need to update other properties like imageUri if available
-          };
-
-          // Update data in the Firebase Realtime Database
-          const campingSpotRef = ref(database, `campingSpots/${childSnapshot.key}`);
-          set(campingSpotRef, editedCampingSpot);
-
-          // Remove edit form after saving
-          li.removeChild(editForm);
-        });
-      });
-
-      li.appendChild(editButton);
-
-          const deleteButton = document.createElement('button');
-          deleteButton.textContent = 'Delete';
-          deleteButton.style.backgroundColor = '#ff5c5c';
-          deleteButton.style.color = '#fff';
-          deleteButton.style.border = 'none';
-          deleteButton.style.padding = '5px 10px';
-          deleteButton.style.borderRadius = '5px';
-          deleteButton.style.cursor = 'pointer';
-          deleteButton.style.transition = 'background-color 0.3s ease';
-          deleteButton.addEventListener('click', () => {
-            remove(ref(database, `campingSpots/${childSnapshot.key}`));
-          });
-
-          li.appendChild(deleteButton);
-          campingSpotList.appendChild(li);
-        });
-      });
-    }
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('User is signed in:', user);
-        displayCampingSpots();
-        document.getElementById('loginForm').style.display = 'none';
-        loadGoogleMaps(); 
-      } else {
-        console.log('User is signed out');
-        document.getElementById('campingSpotList').innerHTML = '';
-        document.getElementById('loginForm').style.display = 'block';
-      }
-    });
-    document.getElementById('loginButton').addEventListener('click', () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log(user);
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error(errorMessage);
-        });
-    });
-
-    function initMap() {
-    const map = new google.maps.Map(document.getElementById("map"), {
-        center: {  lat: 56.9, lng: -4.6 }, // Default center
-        zoom: 6, // Default zoom level
-    });
-
-    // Add markers for each camping spot
-    onValue(campingSpotsRef, (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-            const campingSpot = childSnapshot.val();
-            const marker = new google.maps.Marker({
-                position: { lat: parseFloat(campingSpot.latitude), lng: parseFloat(campingSpot.longitude) },
-                map: map,
-                title: campingSpot.locationName,
-            });
-        });
-    });
-}
-  </script>
-  <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgl_xTAa2SPIUcEJ1-Jo4ZD29PLwJHZHE&callback=initMap"></script> -->
 </head>
 
 <body>
@@ -178,17 +17,20 @@
   </header>
   <div id="loginForm">
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <label for="email">Email:</label>
+    <input type="email" id="email" >
+    <label for="password">Password:</label>
+    <input type="password" id="password" >
     <button id="loginButton">Login</button>
   </div>
   <ul id="campingSpotList"></ul>
-
   <div id="map"></div>
-
-</body>
-<footer>
-  <p>&copy; Camp Wild. All rights reserved. | Designed by Matthew Young, 2024</p>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js" type="module"></script>
+  <script src="firebase-config.js" type="module"></script>
+  <script src="app.js" type="module"></script>
+<footer><p>&copy; Camp Wild. All rights reserved. | Designed by Matthew Young, 2024</p>
 </footer>
-
+</body>
 </html>
