@@ -33,16 +33,16 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:layout_below="@id/toolbar"-->
 <!--        android:orientation="vertical">-->
-<!--        -->
+
 <!--    </LinearLayout>-->
 
-<!--    <androidx.appcompat.widget.SearchView-->
-<!--        android:id="@+id/searchView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/toolbar"-->
-<!--        app:iconifiedByDefault="false"-->
-<!--        app:queryHint="Search" />-->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search" />
 
     <fragment
         android:id="@+id/map"

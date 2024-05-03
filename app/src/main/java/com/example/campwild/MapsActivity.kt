@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -65,6 +66,7 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
     private var searchLayout: LinearLayout? = null
     private var isSearchVisible = false
     private var isSatelliteViewEnabled = false
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +77,11 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
 //        } catch (Exception e) {
 //            Log.e("MapsActivity", "Firebase initialization failed", e);
 //        }
-
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        if (!sharedPreferences.getBoolean("instructionsShown", false)) {
+            showInstructionsDialog()
+        }
+        sharedPreferences.edit().putBoolean("instructionsShown", true).apply()
         val binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val mapFragment = supportFragmentManager
@@ -106,31 +112,48 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
                     }
                     true
                 }
+
                 R.id.action_list -> {
                     startActivity(Intent(this@MapsActivity, ListActivity::class.java))
                     true
                 }
+
                 R.id.action_toggle_satellite -> {
                     isSatelliteViewEnabled = !isSatelliteViewEnabled
                     toggleSatelliteView()
                     true
                 }
+
                 else -> false
             }
 
         }
     }
 
+
+    private fun showInstructionsDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Welcome to CampWild!")
+        builder.setMessage("Instructions: \n\n1. Use the map to explore camping spots. \n2. Tap on a marker to view details. \n3. Press the search icon to find specific locations. \n4. Use the bottom navigation for more options. \n5. Have fun and enjoy your camping experience!")
+        builder.setPositiveButton("Got it") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     private fun toggleSatelliteView() {
         if (mMap != null) {
-            mMap!!.mapType = if (isSatelliteViewEnabled) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
+            mMap!!.mapType =
+                if (isSatelliteViewEnabled) GoogleMap.MAP_TYPE_SATELLITE else GoogleMap.MAP_TYPE_NORMAL
         }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val searchManager: SearchManager? = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        val searchManager: SearchManager? =
+            getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView?
         if (searchManager != null && searchView != null) {
@@ -153,64 +176,40 @@ class MapsActivity() : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickLis
     }
 
     private fun performSearch(query: String) {
+        Log.d("performSearch", "Query: $query")
         mMap?.clear()
         for (marker in markersList) {
-            if (marker.title?.contains(query, ignoreCase = true) == true) {
+            val isVisible = marker.title?.contains(query, ignoreCase = true) == true
+            Log.d("performSearch", "Marker Title: ${marker.title}, isVisible: $isVisible")
+            if (isVisible) {
                 marker.isVisible = true
+                mMap?.addMarker(
+                    MarkerOptions().position(marker.position).title(marker.title)
+                )
             } else {
                 marker.isVisible = false
             }
         }
     }
-//    private fun showSearchView() {
-//        val searchView = findViewById<SearchView>(R.id.searchView)
-//        searchView.visibility = View.VISIBLE
-//        isSearchVisible = true
-//    }
-//
-//    private fun hideSearchView() {
-//        val searchView = findViewById<SearchView>(R.id.searchView)
-//        searchView.visibility = View.GONE
-//        isSearchVisible = false
-//    }
-//    private fun showSearchView() {
-//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-//        searchLayout = findViewById(R.id.searchLayout)
-//        searchLayout?.visibility = View.VISIBLE
-//
-//        val searchView = SearchView(toolbar.context)
-//        searchLayout?.addView(searchView)
-//        isSearchVisible = true
-//
-//        // Set up search view listener
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                // Perform search operation
-//                performSearch(query)
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//                // Handle text change event
-//                return true
-//            }
-//        })
-//    }
-//
-//    private fun hideSearchView() {
-//        searchLayout?.visibility = View.GONE
-//        searchLayout?.removeAllViews()
-//        isSearchVisible = false
-//    }
+    private fun showSearchView() {
+        val searchView = findViewById<SearchView>(R.id.searchView)
+        searchView.visibility = View.VISIBLE
+        isSearchVisible = true
+    }
 
+    private fun hideSearchView() {
+        val searchView = findViewById<SearchView>(R.id.searchView)
+        searchView.visibility = View.GONE
+        isSearchVisible = false
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         if (itemId == R.id.action_search) {
-//            if (!isSearchVisible) {
-//                showSearchView()
-//            } else {
-//                hideSearchView()
-//            }
+            if (!isSearchVisible) {
+                showSearchView()
+            } else {
+                hideSearchView()
+            }
             Log.d("MenuItemClick", "Search item clicked")
             onSearchRequested()
             return true
