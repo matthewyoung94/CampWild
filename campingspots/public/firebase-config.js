@@ -1,11 +1,1 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyCEwZteMOZ2NyWiJvQamhTdImrpqkvx4mA",
-    authDomain: "weighty-tensor-378011.firebaseapp.com",
-    projectId: "weighty-tensor-378011",
-    storageBucket: "weighty-tensor-378011.appspot.com",
-    messagingSenderId: "420353260625",
-    appId: "1:420353260625:android:42a3bb6aacfc0f8ac70c70"
-};
-
-firebase.initializeApp(firebaseConfig);
-// const auth = firebase.auth();
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";import{getAuth}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";import{getDatabase,ref}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";const firebaseConfig={apiKey:"AIzaSyCEwZteMOZ2NyWiJvQamhTdImrpqkvx4mA",authDomain:"weighty-tensor-378011.firebaseapp.com",databaseURL:" https://weighty-tensor-378011-default-rtdb.europe-west1.firebasedatabase.app",projectId:"weighty-tensor-378011",storageBucket:"weighty-tensor-378011.appspot.com",messagingSenderId:"420353260625",appId:"1:420353260625:android:42a3bb6aacfc0f8ac70c70"},app=initializeApp(firebaseConfig),auth=getAuth(app),database=getDatabase(app),campingSpotsRef=ref(database,"campingSpots");export{app,auth,database,campingSpotsRef};

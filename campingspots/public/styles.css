@@ -6,6 +6,13 @@ body {
   padding: 0;
 }
 
+.highlighted {
+  background-color: #f0f0f0; 
+  font-weight: bold; 
+  color: #333; 
+}
+
+
 header {
   background-color: #3498db;
   color: #fff;
@@ -21,8 +28,8 @@ header {
 }
 
 li img {
-  max-width: 200px; /* Set maximum width to 100% of the container */
-  height: auto; /* Maintain aspect ratio */
+  max-width: 200px; 
+  height: auto;
 }
 
 h1 {
@@ -91,10 +98,10 @@ footer p {
 
 
 #map {
-  height: 400px; /* Set the height of the map */
-  width: 100%; /* Set the width of the map to fill its container */
-  border-radius: 10px; /* Add border radius for a rounded appearance */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
+  height: 400px; 
+  width: 100%; 
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
 @media only screen and (max-width: 768px) {

@@ -20,10 +20,8 @@ CampWild is a mobile app designed to help outdoor enthusiasts discover and share
 - **Backend**:
   - Firebase Realtime Database
   - Firebase Authentication
+  - Firebase Hosting
 - **APIs**:
   - Google Maps API
 
-## Acknowledgements
-
-- Firebase Documentation
-- Android Developer Documentation
+Admin - https://weighty-tensor-378011.web.app/
